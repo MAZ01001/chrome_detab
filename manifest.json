@@ -1,0 +1,29 @@
+{
+    "manifest_version": 3,
+    "name": "Chrome detab",
+    "description": "Chrome extension to popup any tab or move it back to a normal window",
+    "version": "1.0",
+    "icons": {
+        "16": "img/icon-16.png",
+        "32": "img/icon-32.png",
+        "48": "img/icon-48.png",
+        "128": "img/icon-128.png"
+    },
+    "permissions": [ "contextMenus" ],
+    "background": { "service_worker": "background.js" },
+    "action": {
+        "default_title": "Click to move all selected tabs to popups and focus currently active page",
+        "default_icon": {
+            "16": "img/icon-16.png",
+            "32": "img/icon-32.png",
+            "48": "img/icon-48.png",
+            "128": "img/icon-128.png"
+        }
+    },
+    "commands": {
+        "popup": {
+            "suggested_key": { "default": "Alt + 0" },
+            "description": "Popup the active tab or move it back to a normal window"
+        }
+    }
+}
