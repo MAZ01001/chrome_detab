@@ -148,7 +148,8 @@ chrome.runtime.onInstalled.addListener(async details=>{
     chrome.contextMenus.create({title:"Popup toggle current tab",contexts:["page"],id:"page"});
     chrome.contextMenus.create({title:"Popup window from link",contexts:["link"],id:"link"});
     chrome.contextMenus.create({title:"Popup incognito window from link",contexts:["link"],id:"link incognito"});
-    console.debug("installed extension (%s) and added context menu items",details.reason);
+    console.debug("[install:%s] added context menu items",details.reason);
+    console.debug("[install:%s] finished extension install",details.reason);
 });
 
-console.debug("loaded extension in %sms",(performance.now()-startTime).toFixed(1));
+console.debug("loaded extension in %oms",Number((performance.now()-startTime).toFixed(2)));
