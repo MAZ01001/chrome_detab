@@ -34,4 +34,13 @@ If you click the extension icon (next to the URL bar), it will open all selected
 
 ---
 
-Specifically, when a popup is reverted to a normal tab, it looks for the last focused window and inserts it left of the active tab, but if the last window has a different incognito mode, it will show an error instead.
+Specifically, when a popup is reverted to a normal tab, it looks for the last focused window and inserts it left of the active tab.
+
+Tries to keep track of window-focus-order so the problem with incognito mode missmatch is solved (see below).
+
+[`chrome.windows.getLastFocused()`](https://developer.chrome.com/docs/extensions/reference/api/windows#method-getLastFocused "Chrome API docs")
+or rather [`chrome.windows.QueryOptions`](https://developer.chrome.com/docs/extensions/reference/api/windows#type-QueryOptions "Chrome API docs")
+has no way of getting incognito/non-incognito windows separately, which is possible with, for example, window type (normal/popup).
+So, manual tracking of all windows is necessary.
+
+See `LastWindow` at the start of `background.js`.
