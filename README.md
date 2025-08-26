@@ -34,6 +34,8 @@ Chrome extension to turn any tab into a minimal pop-up window (and vice versa)
 > Change extension hotkeys on <chrome://extensions/shortcuts>
 >
 > Select multiple tabs by clicking on them while holding <kbd>ctrl</kbd> and/or <kbd>shift</kbd>
+>
+> Move a tab inside a window with <kbd><kbd>ctrl</kbd>+<kbd>shift</kbd>+<kbd>PgUp</kbd></kbd>/<kbd><kbd>ctrl</kbd>+<kbd>shift</kbd>+<kbd>PgDn</kbd></kbd> ([Chrome keyboard shortcuts](https://support.google.com/chrome/answer/157179#zippy=%2Ctab-and-window-shortcuts:~:text=Move%20tabs%20right%20or%20left "Google Chrome Help: Chrome keyboard shortcuts"))
 
 <dl>
     <dt><b>Hotkeys</b></dt>
