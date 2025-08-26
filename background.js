@@ -3,10 +3,10 @@
 
 const startTime=performance.now();
 
-//! `chrome.windows.getLastFocused` (function) or rather `chrome.windows.QueryOptions` (type)
-//! has no way of getting incognito/non-incognito windows separately,
-//! which is possible with, for example, window type (normal/popup).
-//! So, manual tracking of all windows is necessary.
+//! `chrome.windows.getLastFocused()` gets the last focused window, but `chrome.windows.QueryOptions` (parameter)
+//! can only distinguish between window types like `normal` and `popup`,
+//! and has no way of getting incognito/non-incognito windows separately
+//! So, manual tracking of all focused windows is necessary
 
 /**@author MAZ <https://github.com/MAZ01001> @license MIT 2025 MAZ @link <https://github.com/MAZ01001/chrome_detab>*/
 const LastWindow=class LastWindow extends null{
@@ -149,26 +149,62 @@ chrome.windows.onRemoved.addListener(windowId=>LastWindow.rem(windowId),{windowT
 // ------------------------------------------------------------
 
 chrome.commands.onCommand.addListener(async command=>{
-    console.debug(">> running command");
-    if(command!=="popup")return console.error("[unexpected] unknown command: %o",command);
+    console.debug(">> running command %o",command);
+    if(command==="new normal"){
+        const win=await chrome.windows.getLastFocused({windowTypes:["normal","popup"],populate:true});
+        if(win?.id==null||win.id===chrome.windows.WINDOW_ID_NONE)return console.error("no popups or normal windows");
+        if(win.tabs==null)return console.error("[unexpected] did not populate tabs");
+        /**@type {(chrome.tabs.Tab&{id:number})[]}*/
+        const tabs=[];
+        let activeTab;
+        for(const tab of win.tabs){
+            if(tab.id==null||tab.id===chrome.tabs.TAB_ID_NONE)continue;
+            //@ts-ignore id of tab is not undefined (checked above) and matches tabs type
+            if(tab.highlighted)tabs.push(tab);
+            if(tab.active)activeTab=tab;
+        }
+        if(activeTab?.id==null)return console.error("[unexpected] window with no active tab");
+        const firstTab=tabs.shift();
+        if(firstTab==null)return console.error("[unexpected] window with no highlighted tabs");
+        const winNew=await chrome.windows.create({
+            tabId:firstTab.id,
+            type:"normal",
+            incognito:win.incognito,
+            focused:true,
+            left:win.left,
+            top:win.top,
+            width:win.width??firstTab.width,
+            height:win.height??firstTab.height,
+        });
+        if(winNew?.id==null||winNew?.id===chrome.windows.WINDOW_ID_NONE)return console.error("[unexpected] could not create window");
+        if(tabs.length!==0){
+            await chrome.tabs.move(tabs.map(v=>v.id),{windowId:winNew.id,index:-1});
+            //// await chrome.tabs.update(activeTab.id,{active:true});
+            const activeIndex=(i=>i===-1?0:i+1)(tabs.findIndex(v=>v.id===activeTab.id));
+            await chrome.tabs.highlight({windowId:winNew.id,tabs:Array.from({length:tabs.length+1},(_,i)=>i===0?activeIndex:i>activeIndex?i:i-1)});
+        }
+        return console.debug("moved %i tabs to new normal window (from %o window)",tabs.length+1,win.type);
+    }
+    if(command!=="toggle")return console.error("[unexpected] unknown command");
     const win=await chrome.windows.getLastFocused({windowTypes:["normal","popup"],populate:true});
-    if(win?.id==null||win.id===chrome.windows.WINDOW_ID_NONE)return console.warn("no popups or normal windows");
+    if(win?.id==null||win.id===chrome.windows.WINDOW_ID_NONE)return console.error("no popups or normal windows");
     if(win.tabs==null)return console.error("[unexpected] did not populate tabs");
     if(win.type==="popup"){
         const tab=win.tabs[0];
         if(tab?.id==null||tab.id===chrome.tabs.TAB_ID_NONE)return console.error("[unexpected] popup window with no tab");
         const lastWin=await chrome.windows.getLastFocused({windowTypes:["normal"],populate:true});
         if(lastWin?.id==null||lastWin.id===chrome.windows.WINDOW_ID_NONE){
-            await chrome.windows.create({
+            const winNew=await chrome.windows.create({
                 tabId:tab.id,
                 type:"normal",
                 incognito:tab.incognito,
                 focused:true,
                 left:win.left,
                 top:win.top,
-                width:tab.width,
-                height:tab.height,
+                width:win.width??tab.width,
+                height:win.height??tab.height,
             });
+            if(winNew?.id==null||winNew?.id===chrome.windows.WINDOW_ID_NONE)return console.error("[unexpected] could not create window");
             return console.debug("popup & no normal windows → move to new normal window");
         }
         if(lastWin.tabs==null)return console.error("[unexpected] did not populate tabs");
@@ -179,19 +215,20 @@ chrome.commands.onCommand.addListener(async command=>{
             let manualWin=null;
             for(let manual;true;){
                 manual=LastWindow.get(false,tab.incognito);
-                if(manual===false)return console.warn("Lastwindow is still loading");
+                if(manual===false)return console.error("Lastwindow is still loading");
                 if(manual==null||manual.id===chrome.windows.WINDOW_ID_NONE){
-                    await chrome.windows.create({
+                    const winNew=await chrome.windows.create({
                         tabId:tab.id,
                         type:"normal",
                         incognito:tab.incognito,
                         focused:true,
                         left:win.left,
                         top:win.top,
-                        width:tab.width,
-                        height:tab.height,
+                        width:win.width??tab.width,
+                        height:win.height??tab.height,
                     });
-                    return console.debug("popup & incognito missmatch & no matching windows (via LastWindow) → move to new normal window");
+                    if(winNew?.id==null||winNew?.id===chrome.windows.WINDOW_ID_NONE)return console.error("[unexpected] could not create window");
+                    return console.debug("popup & incognito mismatch & no matching windows (via LastWindow) → move to new normal window");
                 }
                 manualWin=await chrome.windows.get(manual.id,{populate:true});
                 if(manualWin?.id!=null&&manualWin.id!==chrome.windows.WINDOW_ID_NONE)break;
@@ -207,7 +244,7 @@ chrome.commands.onCommand.addListener(async command=>{
             }).then(v=>Array.isArray(v)?v[0]:v);
             await chrome.tabs.highlight({windowId:manualTab.windowId,tabs:newTab.index});
             await chrome.windows.update(manualTab.windowId,{focused:true});
-            return console.debug("popup & incognito missmatch → move to last normal window (via LastWindow)");
+            return console.debug("popup & incognito mismatch → move to last normal window (via LastWindow)");
         }
         const newTab=await chrome.tabs.move(tab.id,{
             windowId:lastTab.windowId,
@@ -217,19 +254,27 @@ chrome.commands.onCommand.addListener(async command=>{
         await chrome.windows.update(lastTab.windowId,{focused:true});
         return console.debug("popup → move to last normal window");
     }
-    const tab=win.tabs.find(v=>v.active);
-    if(tab?.id==null||tab.id===chrome.tabs.TAB_ID_NONE)return console.error("[unexpected] normal window with no active tab");
-    await chrome.windows.create({
-        tabId:tab.id,
-        type:"popup",
-        incognito:tab.incognito,
-        focused:true,
-        left:win.left,
-        top:win.top,
-        width:tab.width,
-        height:tab.height,
-    });
-    console.debug("normal window → move to popup");
+    let popups=0,
+        activePopup;
+    for(const tab of win.tabs){
+        if(tab.id==null||tab.id===chrome.tabs.TAB_ID_NONE)continue;
+        if(!tab.highlighted)continue;
+        const popup=await chrome.windows.create({
+            tabId:tab.id,
+            type:"popup",
+            incognito:win.incognito,
+            focused:true,
+            left:win.left,
+            top:win.top,
+            width:win.width??tab.width,
+            height:win.height??tab.height,
+        });
+        if(popup?.id==null||popup?.id===chrome.windows.WINDOW_ID_NONE)console.warn("[unexpected] could not create window for tab %o",tab.id);
+        ++popups;
+        if(tab.active)activePopup=popup;
+    }
+    if(activePopup?.id!=null)await chrome.windows.update(activePopup.id,{focused:true});
+    console.debug("normal window (%i selected) → move to popup",popups);
 });
 
 chrome.action.onClicked.addListener(async tab=>{
@@ -250,9 +295,10 @@ chrome.action.onClicked.addListener(async tab=>{
             focused:true,
             left:win.left,
             top:win.top,
-            width:tab.width,
-            height:tab.height,
+            width:win.width??tab.width,
+            height:win.height??tab.height,
         });
+        if(popup?.id==null||popup?.id===chrome.windows.WINDOW_ID_NONE)console.warn("[unexpected] could not create window for tab %o",tab.id);
         ++popups;
         if(tab.active)activePopup=popup;
     }
@@ -261,24 +307,25 @@ chrome.action.onClicked.addListener(async tab=>{
 });
 
 chrome.contextMenus.onClicked.addListener(async(info,tab)=>{
-    console.debug(">> context menu item clicked");
-    if(info.menuItemId==="page"){
+    console.debug(">> context menu item clicked: %o",info.menuItemId);
+    if(info.menuItemId==="toggle"){
         if(tab?.id==null||tab.id===chrome.tabs.TAB_ID_NONE)return console.error("[unexpected] context menu clicked but no tab given");
         const win=await chrome.windows.get(tab.windowId).catch(()=>undefined);
         if(win?.id==null||win.id===chrome.windows.WINDOW_ID_NONE)return console.error("[unexpected] window of tab does not exist");
         if(win.type==="popup"){
             const lastWin=await chrome.windows.getLastFocused({windowTypes:["normal"],populate:true});
             if(lastWin?.id==null||lastWin.id===chrome.windows.WINDOW_ID_NONE){
-                await chrome.windows.create({
+                const winNew=await chrome.windows.create({
                     tabId:tab.id,
                     type:"normal",
                     incognito:tab.incognito,
                     focused:true,
                     left:win.left,
                     top:win.top,
-                    width:tab.width,
-                    height:tab.height,
+                    width:win.width??tab.width,
+                    height:win.height??tab.height,
                 });
+                if(winNew?.id==null||winNew?.id===chrome.windows.WINDOW_ID_NONE)return console.error("[unexpected] could not create window");
                 return console.debug("popup & no normal windows → move to new normal window");
             }
             if(lastWin.tabs==null)return console.error("[unexpected] did not populate tabs");
@@ -289,19 +336,20 @@ chrome.contextMenus.onClicked.addListener(async(info,tab)=>{
                 let manualWin=null;
                 for(let manual;true;){
                     manual=LastWindow.get(false,tab.incognito);
-                    if(manual===false)return console.warn("Lastwindow is still loading");
+                    if(manual===false)return console.error("Lastwindow is still loading");
                     if(manual==null||manual.id===chrome.windows.WINDOW_ID_NONE){
-                        await chrome.windows.create({
+                        const winNew=await chrome.windows.create({
                             tabId:tab.id,
                             type:"normal",
                             incognito:tab.incognito,
                             focused:true,
                             left:win.left,
                             top:win.top,
-                            width:tab.width,
-                            height:tab.height,
+                            width:win.width??tab.width,
+                            height:win.height??tab.height,
                         });
-                        return console.debug("popup & incognito missmatch & no matching windows (via LastWindow) → move to new normal window");
+                        if(winNew?.id==null||winNew?.id===chrome.windows.WINDOW_ID_NONE)return console.error("[unexpected] could not create window");
+                        return console.debug("popup & incognito mismatch & no matching windows (via LastWindow) → move to new normal window");
                     }
                     manualWin=await chrome.windows.get(manual.id,{populate:true});
                     if(manualWin?.id!=null&&manualWin.id!==chrome.windows.WINDOW_ID_NONE)break;
@@ -317,7 +365,7 @@ chrome.contextMenus.onClicked.addListener(async(info,tab)=>{
                 }).then(v=>Array.isArray(v)?v[0]:v);
                 await chrome.tabs.highlight({windowId:manualTab.windowId,tabs:newTab.index});
                 await chrome.windows.update(manualTab.windowId,{focused:true});
-                return console.debug("popup & incognito missmatch → move to last normal window (via LastWindow)");
+                return console.debug("popup & incognito mismatch → move to last normal window (via LastWindow)");
             }
             const newTab=await chrome.tabs.move(tab.id,{
                 windowId:lastTab.windowId,
@@ -327,38 +375,80 @@ chrome.contextMenus.onClicked.addListener(async(info,tab)=>{
             await chrome.windows.update(lastTab.windowId,{focused:true});
             return console.debug("popup → move to last normal window");
         }
-        await chrome.windows.create({
+        const winNew=await chrome.windows.create({
             tabId:tab.id,
             type:"popup",
             incognito:tab.incognito,
             focused:true,
             left:win?.left,
             top:win?.top,
-            width:tab.width,
-            height:tab.height,
+            width:win?.width??tab.width,
+            height:win?.height??tab.height,
         });
+        if(winNew?.id==null||winNew?.id===chrome.windows.WINDOW_ID_NONE)return console.error("[unexpected] could not create window");
         return console.debug("normal window → move to popup");
     }
-    //~ info.menuItemId = "link" or "link incognito"
-    const win=tab?.id==null||tab.id===chrome.tabs.TAB_ID_NONE?undefined:await chrome.windows.get(tab.windowId).catch(()=>undefined);
-    const incognito=info.menuItemId==="link incognito";
-    await chrome.windows.create({
-        url:info.linkUrl,
-        focused:true,
-        type:"popup",
-        incognito,
-        left:win?.left,
-        top:win?.top,
-        width:tab?.width,
-        height:tab?.height,
-    });
-    console.debug("opened link in popup (with incognito mode %s)",incognito?"on":"off");
+    if(info.menuItemId==="new normal"){
+        if(tab?.id==null||tab.id===chrome.tabs.TAB_ID_NONE)return console.error("[unexpected] context menu clicked but no tab given");
+        const win=await chrome.windows.get(tab.windowId).catch(()=>undefined);
+        if(win?.id==null||win.id===chrome.windows.WINDOW_ID_NONE)return console.error("[unexpected] window of tab does not exist");
+        const winNew=await chrome.windows.create({
+            tabId:tab.id,
+            type:"normal",
+            incognito:tab.incognito,
+            focused:true,
+            left:win.left,
+            top:win.top,
+            width:win.width,
+            height:win.height,
+        });
+        if(winNew?.id==null||winNew?.id===chrome.windows.WINDOW_ID_NONE)return console.error("[unexpected] could not create window");
+        return console.debug("new normal window (from %o window)",win.type);
+    }
+    if(info.menuItemId==="media"||info.menuItemId==="media incognito"){
+        if(info.srcUrl==null)return console.error("media (type %o) has no source URL",info.mediaType);
+        const incognito=info.menuItemId.length===15;
+        const win=tab?.id==null||tab.id===chrome.tabs.TAB_ID_NONE?undefined:await chrome.windows.get(tab.windowId).catch(()=>undefined);
+        const winNew=await chrome.windows.create({
+            url:info.srcUrl,
+            focused:true,
+            type:"popup",
+            incognito,
+            left:win?.left,
+            top:win?.top,
+            width:win?.width??tab?.width,
+            height:win?.height??tab?.height,
+        });
+        if(winNew?.id==null||winNew?.id===chrome.windows.WINDOW_ID_NONE)return console.error("[unexpected] could not create window");
+        return console.debug("opened media (type %o) in popup (with incognito mode %s)",info.mediaType,incognito);
+    }
+    if(info.menuItemId==="link"||info.menuItemId==="link incognito"){
+        if(info.linkUrl==null)return console.error("link has no URL");
+        const win=tab?.id==null||tab.id===chrome.tabs.TAB_ID_NONE?undefined:await chrome.windows.get(tab.windowId).catch(()=>undefined);
+        const incognito=info.menuItemId.length===14;
+        const winNew=await chrome.windows.create({
+            url:info.linkUrl,
+            focused:true,
+            type:"popup",
+            incognito,
+            left:win?.left,
+            top:win?.top,
+            width:win?.width??tab?.width,
+            height:win?.height??tab?.height,
+        });
+        if(winNew?.id==null||winNew?.id===chrome.windows.WINDOW_ID_NONE)return console.error("[unexpected] could not create window");
+        return console.debug("opened link in popup (with incognito mode %s)",incognito?"on":"off");
+    }
+    console.error("[unexpected] context menu item with unknown ID");
 });
 
 chrome.runtime.onInstalled.addListener(async details=>{
-    chrome.contextMenus.create({title:"Popup toggle current tab",contexts:["page"],id:"page"});
-    chrome.contextMenus.create({title:"Popup window from link",contexts:["link"],id:"link"});
-    chrome.contextMenus.create({title:"Popup incognito window from link",contexts:["link"],id:"link incognito"});
+    chrome.contextMenus.create({title:"Popup toggle current tab",contexts:["page"],id:"toggle"});
+    chrome.contextMenus.create({title:"Move to new normal window",contexts:["page"],id:"new normal"});
+    chrome.contextMenus.create({title:"Popup link",contexts:["link"],id:"link"});
+    chrome.contextMenus.create({title:"Popup incognito link",contexts:["link"],id:"link incognito"});
+    chrome.contextMenus.create({title:"Popup media (source URL)",contexts:["image","video","audio"],id:"media"});
+    chrome.contextMenus.create({title:"Popup incognito media (source URL)",contexts:["image","video","audio"],id:"media incognito"});
     console.debug("[install:%s] added context menu items",details.reason);
     await LastWindow.load();
     console.debug("[install:%s] finished extension install",details.reason);
