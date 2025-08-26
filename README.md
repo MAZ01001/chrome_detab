@@ -2,45 +2,96 @@
 
 <img height="32" src="./img/icon-32.png" alt="extension icon" title="extension icon">
 
-Chrome extension to turn the current tab into a minimal pop-up window (and back).
+Chrome extension to turn any tab into a minimal pop-up window (and vice versa)
 
-Moves the tab itself so the page is not reloaded and stays the way it is (as oposed to the usual ways like `window.open(location.href,"detab","toolbar=0");`).
+> [!NOTE]
+>
+> Moves the tab itself so the page is not reloaded and stays the way it is,
+> as oposed to something like `window.open(location.href,"detab","toolbar=0");`
+>
+> Thus, also doesn't need permissions to read URLS, inject scripts, etc
 
-Thus, it doesn't need permission to read URLs or page contents, also no scripts are injected into the page.
+## Install
+
+1. Clone this repo or download the `7z` file from releases (<https://github.com/MAZ01001/chrome_detab/releases>)
+2. Unpack `zip`/`7z` (_get 7-Zip from <https://www.7-zip.org/>_)
+3. Turn on dev-mode in <chrome://extensions> (top right)
+4. Click _Load unpacked extension_ (top left)
+5. Locate unpacked folder
+6. Click it and then hit _Select folder_
+7. ...
+8. Profit
 
 > [!IMPORTANT]
 >
 > This extension is (currently) NOT hosted in _Chrome Web Store_ and since loading extension from other sources does not work (since chrome M33 ~ 2014) for security reasons,
-> the only way you could/should install this extension is by
+> the only way you could/should install this extension is by following the steps above
+
+## Controls
+
+> [!NOTE]
 >
-> 1. getting the root folder of this repo (or `7z` from releases)
-> 2. unpack `zip`/`7z`
-> 3. turn on dev-mode in <chrome://extensions> (top right)
-> 4. click _Load unpacked extension_ (top left)
-> 5. find folder location
-> 6. click it and then _Select folder_
-> 7. ...
-> 8. profit
+> Change extension hotkeys on <chrome://extensions/shortcuts>
 >
-> don't trust other sources not mentioned here (<https://github.com/MAZ01001/chrome_detab>)
+> Select multiple tabs by clicking on them while holding <kbd>ctrl</kbd> and/or <kbd>shift</kbd>
 
----
+<dl>
+    <dt><b>Hotkeys</b></dt>
+    <dd><dl>
+        <dt><kbd><kbd>alt</kbd>+<kbd>0</kbd></kbd></dt>
+        <dd>
+            Toggle popup of last focused or selected tabs
+            <li>last focused tab gets moved to a popup window</li>
+            <li>last focused popup gets moved to the last focused normal window (left of active tab in that window)</li>
+            <li>all selected tabs are each moved to a popup window (in order) and the popup that was the active tab is focused</li>
+        </dd>
+        <dt><kbd><kbd>alt</kbd>+<kbd>shift</kbd>+<kbd>0</kbd></kbd></dt>
+        <dd>
+            Create new window with last focused or selected tabs
+            <li>last focused tab gets moved to a new window</li>
+            <li>last focused popup gets moved to a new (non-popup) window</li>
+            <li>all selected tabs are moved to a new window (same order) and are re-selected with the same active tab</li>
+        </dd>
+    </dl></dd>
+    <dt><b>Clicking extension icon</b></dt>
+    <dd>
+        Create popup of current and selected tabs (<i>does nothing if somehow triggered from popup window</i>)
+        <li>last focused tab gets moved to a popup window</li>
+        <li>all selected tabs are each moved to a popup window (in order) and the popup that was the active tab is focused</li>
+    </dd>
+    <dt><b>Context menu</b></dt>
+    <dd><dl>
+        <dt><code>Popup toggle current tab</code> (on page)</dt>
+        <dd>
+            <li>current tab gets moved to a popup window</li>
+            <li>current popup gets moved to the last focused normal window (left of active tab in that window)</li>
+        </dd>
+        <dt><code>Move to new normal window</code> (on page)</dt>
+        <dd>
+            <li>current tab gets moved to a new window</li>
+            <li>current popup gets moved to a new (non-popup) window</li>
+        </dd>
+        <dt><code>Popup link</code> / <code>Popup incognito link</code> (on link elements)</dt>
+        <dd>
+            (<i>does nothing if link URL is not available</i>)
+            <li>create popup from link URL</li>
+            <li>create inconito popup from link URL</li>
+        </dd>
+        <dt><code>Popup media (source URL)</code> / <code>Popup incognito media (source URL)</code> (on image/video/audio elements)</dt>
+        <dd>
+            (<i>does nothing if media source URL is not available</i>)
+            <li>create popup from media source URL</li>
+            <li>create inconito popup from media source URL</li>
+        </dd>
+    </dl></dd>
+</dl>
 
-Toggle popup of current window from context menu (on page) or via hotkey <kbd><kbd>alt</kbd>+<kbd>0</kbd></kbd> (can be changed in <chrome://extensions/shortcuts>).
-
-If right-clicking on a link, there are also options to open that link as a popup (with or without incognito mode)
-
-If you click the extension icon (next to the URL bar), it will open all selected tabs as popups (_select multiple tabs with <kbd>ctrl</kbd>/<kbd>shift</kbd>_).
-
----
-
-Specifically, when a popup is reverted to a normal tab, it looks for the last focused window and inserts it left of the active tab.
-
-Tries to keep track of window-focus-order so the problem with incognito mode missmatch is solved (see below).
+## Finding the last focused window
 
 [`chrome.windows.getLastFocused()`](https://developer.chrome.com/docs/extensions/reference/api/windows#method-getLastFocused "Chrome API docs")
-or rather [`chrome.windows.QueryOptions`](https://developer.chrome.com/docs/extensions/reference/api/windows#type-QueryOptions "Chrome API docs")
-has no way of getting incognito/non-incognito windows separately, which is possible with, for example, window type (normal/popup).
-So, manual tracking of all windows is necessary.
+gets the last focused window, but [`chrome.windows.QueryOptions`](https://developer.chrome.com/docs/extensions/reference/api/windows#type-QueryOptions "Chrome API docs")
+(parameter) can only distinguish between window types like `normal` and `popup`, and has no way of getting incognito/non-incognito windows separately
 
-See `LastWindow` at the start of `background.js`.
+So, manual tracking of all focused windows is necessary
+
+See `LastWindow` (static class) at the start of `background.js`
