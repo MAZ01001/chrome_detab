@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chrome detab options</title>
+    <link rel="stylesheet" href="options.css">
+</head>
+<body>
+    <h1>Chrome detab options</h1>
+    <hr>
+    <span>
+        <label title="If to use synchronised storage (via chrome-profile; default ON)"><input type="checkbox" id="sync" checked> Sync</label>
+        <input type="button" id="sync-save" value="Save sync" title="Manual save to synchronised storage" disabled>
+        <input type="button" id="sync-load" value="Load sync" title="Manual load from synchronised storage" disabled>
+    </span>
+    <span>
+        <label title="If to autosave every time a value changes (default ON)"><input type="checkbox" id="autosave" checked> autosave</label>
+        <input type="button" id="save" value="Save" title="Manual save" disabled>
+        <input type="button" id="load" value="Load" title="Manual load" disabled>
+    </span>
+    <label title="Export current options to JSON file">Export: <input type="button" id="export" value="Save to file"></label>
+    <span><label title="Import options from JSON file, overriding current options" for="file">Import: </label><input type="button" id="import" value="Load" disabled><input type="file" id="file" accept=".json"></span>
+    <label title="Reset all current options to their default value">Reset: <input type="button" id="reset" value="Load defaults"></label>
+    <hr>
+    <h2 title="When creating a popup window from the last focused normal window/tab">Normal → Popup</h2>
+    <div role="group">
+        <fieldset><legend title="Size of created popup window">Size</legend>
+            <label title="Let the browser decide the size"><input type="radio" name="nps" id="nps-auto"> Auto</label>
+            <label title="Use the size of the source window (default)"><input type="radio" name="nps" id="nps-source" checked> Same as source window</label>
+            <label title="Use custom size"><input type="radio" name="nps" id="nps-custom"> <div>
+                <label title="Custom window width in pixels (default 100px)">Width: <input type="number" id="nps-custom-width" min="0" max="9007199254740991" step="1" placeholder="100">px</label>
+                <label title="Custom window height in pixels (default 75px)">Height: <input type="number" id="nps-custom-height" min="0" max="9007199254740991" step="1" placeholder="75">px</label>
+            </div></label>
+        </fieldset>
+        <fieldset><legend title="Location of created popup window on screen">Location</legend>
+            <label title="Let the browser decide the location"><input type="radio" name="npl" id="npl-auto"> Auto</label>
+            <label title="Use the location of the source window (centered if possible; default)"><input type="radio" name="npl" id="npl-source" checked> Same as source window</label>
+            <label title="Use custom location"><input type="radio" name="npl" id="npl-custom"> <div>
+                <label title="Custom window location from the left most side of the primary screen">Left: <input type="number" id="npl-custom-left" min="0" max="9007199254740991" step="1" placeholder="0">px</label>
+                <label title="Custom window location from the top most side of the primary screen">Top: <input type="number" id="npl-custom-top" min="0" max="9007199254740991" step="1" placeholder="0">px</label>
+            </div></label>
+        </fieldset>
+    </div>
+    <label title="Set popup to same maximized/fullscreen state as source window (default OFF)"><input type="checkbox" id="npm-copy"> Copy maximized/fullscreen state</label>
+    <fieldset><legend><label title="Override for when source window was maximized/in fullscreen (default ON)"><input type="checkbox" id="npm-override" checked> When maximized/fullscreen</label></legend>
+        <fieldset><legend title="Size of created popup window">Size</legend>
+            <label title="Let the browser decide the size (default)"><input type="radio" name="npms" id="npms-auto" checked> Auto</label>
+            <label title="Use the size of the source window"><input type="radio" name="npms" id="npms-source"> Same as source window</label>
+            <label title="Use custom size"><input type="radio" name="npms" id="npms-custom"> <div>
+                <label title="Custom window width in pixels (default 100px)">Width: <input type="number" id="npms-custom-width" min="0" max="9007199254740991" step="1" placeholder="100">px</label>
+                <label title="Custom window height in pixels (default 75px)">Height: <input type="number" id="npms-custom-height" min="0" max="9007199254740991" step="1" placeholder="75">px</label>
+            </div></label>
+        </fieldset>
+        <fieldset><legend title="Location of created popup window on screen">Location</legend>
+            <label title="Let the browser decide the location (default)"><input type="radio" name="npml" id="npml-auto" checked> Auto</label>
+            <label title="Use the location of the source window (centered if possible)"><input type="radio" name="npml" id="npml-source"> Same as source window</label>
+            <label title="Use custom location"><input type="radio" name="npml" id="npml-custom"> <div>
+                <label title="Custom window location from the left most side of the primary screen">Left: <input type="number" id="npml-custom-left" min="0" max="9007199254740991" step="1" placeholder="0">px</label>
+                <label title="Custom window location from the top most side of the primary screen">Top: <input type="number" id="npml-custom-top" min="0" max="9007199254740991" step="1" placeholder="0">px</label>
+            </div></label>
+        </fieldset>
+    </fieldset>
+    <fieldset><legend><label title="Override for links (default OFF)"><input type="checkbox" id="npl-override"> For links</label></legend>
+        <div role="group">
+            <fieldset><legend title="Size of created popup window">Size</legend>
+                <label title="Let the browser decide the size"><input type="radio" name="npls" id="npls-auto"> Auto</label>
+                <label title="Use the size of the source window (default)"><input type="radio" name="npls" id="npls-source" checked> Same as source window</label>
+                <label title="Use custom size"><input type="radio" name="npls" id="npls-custom"> <div>
+                    <label title="Custom window width in pixels (default 100px)">Width: <input type="number" id="npls-custom-width" min="0" max="9007199254740991" step="1" placeholder="100">px</label>
+                    <label title="Custom window height in pixels (default 75px)">Height: <input type="number" id="npls-custom-height" min="0" max="9007199254740991" step="1" placeholder="75">px</label>
+                </div></label>
+            </fieldset>
+            <fieldset><legend title="Location of created popup window on screen">Location</legend>
+                <label title="Let the browser decide the location"><input type="radio" name="npll" id="npll-auto"> Auto</label>
+                <label title="Use the location of the source window (centered if possible; default)"><input type="radio" name="npll" id="npll-source" checked> Same as source window</label>
+                <label title="Use custom location"><input type="radio" name="npll" id="npll-custom"> <div>
+                    <label title="Custom window location from the left most side of the primary screen">Left: <input type="number" id="npll-custom-left" min="0" max="9007199254740991" step="1" placeholder="0">px</label>
+                    <label title="Custom window location from the top most side of the primary screen">Top: <input type="number" id="npll-custom-top" min="0" max="9007199254740991" step="1" placeholder="0">px</label>
+                </div></label>
+            </fieldset>
+        </div>
+        <label title="Set popup to same maximized/fullscreen state as source window (default OFF)"><input type="checkbox" id="nplm-copy"> Copy maximized/fullscreen state</label>
+        <fieldset><legend><label title="Override for when source window was maximized/in fullscreen (default ON)"><input type="checkbox" id="nplm-override" checked> When maximized/fullscreen</label></legend>
+            <fieldset><legend title="Size of created popup window">Size</legend>
+                <label title="Let the browser decide the size (default)"><input type="radio" name="nplms" id="nplms-auto" checked> Auto</label>
+                <label title="Use the size of the source window"><input type="radio" name="nplms" id="nplms-source"> Same as source window</label>
+                <label title="Use custom size"><input type="radio" name="nplms" id="nplms-custom"> <div>
+                    <label title="Custom window width in pixels (default 100px)">Width: <input type="number" id="nplms-custom-width" min="0" max="9007199254740991" step="1" placeholder="100">px</label>
+                    <label title="Custom window height in pixels (default 75px)">Height: <input type="number" id="nplms-custom-height" min="0" max="9007199254740991" step="1" placeholder="75">px</label>
+                </div></label>
+            </fieldset>
+            <fieldset><legend title="Location of created popup window on screen">Location</legend>
+                <label title="Let the browser decide the location (default)"><input type="radio" name="nplml" id="nplml-auto" checked> Auto</label>
+                <label title="Use the location of the source window (centered if possible)"><input type="radio" name="nplml" id="nplml-source"> Same as source window</label>
+                <label title="Use custom location"><input type="radio" name="nplml" id="nplml-custom"> <div>
+                    <label title="Custom window location from the left most side of the primary screen">Left: <input type="number" id="nplml-custom-left" min="0" max="9007199254740991" step="1" placeholder="0">px</label>
+                    <label title="Custom window location from the top most side of the primary screen">Top: <input type="number" id="nplml-custom-top" min="0" max="9007199254740991" step="1" placeholder="0">px</label>
+                </div></label>
+            </fieldset>
+        </fieldset>
+    </fieldset>
+    <fieldset><legend><label title="Override for images (default OFF)"><input type="checkbox" id="npi-override"> For images</label></legend>
+        <div role="group">
+            <fieldset><legend title="Size of created popup window">Size</legend>
+                <label title="Let the browser decide the size"><input type="radio" name="npis" id="npis-auto"> Auto</label>
+                <label title="Use the size of the source window (default)"><input type="radio" name="npis" id="npis-source" checked> Same as source window</label>
+                <label title="Use custom size"><input type="radio" name="npis" id="npis-custom"> <div>
+                    <label title="Custom window width in pixels (default 100px)">Width: <input type="number" id="npis-custom-width" min="0" max="9007199254740991" step="1" placeholder="100">px</label>
+                    <label title="Custom window height in pixels (default 75px)">Height: <input type="number" id="npis-custom-height" min="0" max="9007199254740991" step="1" placeholder="75">px</label>
+                </div></label>
+            </fieldset>
+            <fieldset><legend title="Location of created popup window on screen">Location</legend>
+                <label title="Let the browser decide the location"><input type="radio" name="npil" id="npil-auto"> Auto</label>
+                <label title="Use the location of the source window (centered if possible; default)"><input type="radio" name="npil" id="npil-source" checked> Same as source window</label>
+                <label title="Use custom location"><input type="radio" name="npil" id="npil-custom"> <div>
+                    <label title="Custom window location from the left most side of the primary screen">Left: <input type="number" id="npil-custom-left" min="0" max="9007199254740991" step="1" placeholder="0">px</label>
+                    <label title="Custom window location from the top most side of the primary screen">Top: <input type="number" id="npil-custom-top" min="0" max="9007199254740991" step="1" placeholder="0">px</label>
+                </div></label>
+            </fieldset>
+        </div>
+        <label title="Set popup to same maximized/fullscreen state as source window (default OFF)"><input type="checkbox" id="npim-copy"> Copy maximized/fullscreen state</label>
+        <fieldset><legend><label title="Override for when source window was maximized/in fullscreen (default ON)"><input type="checkbox" id="npim-override" checked> When maximized/fullscreen</label></legend>
+            <fieldset><legend title="Size of created popup window">Size</legend>
+                <label title="Let the browser decide the size (default)"><input type="radio" name="npims" id="npims-auto" checked> Auto</label>
+                <label title="Use the size of the source window"><input type="radio" name="npims" id="npims-source"> Same as source window</label>
+                <label title="Use custom size"><input type="radio" name="npims" id="npims-custom"> <div>
+                    <label title="Custom window width in pixels (default 100px)">Width: <input type="number" id="npims-custom-width" min="0" max="9007199254740991" step="1" placeholder="100">px</label>
+                    <label title="Custom window height in pixels (default 75px)">Height: <input type="number" id="npims-custom-height" min="0" max="9007199254740991" step="1" placeholder="75">px</label>
+                </div></label>
+            </fieldset>
+            <fieldset><legend title="Location of created popup window on screen">Location</legend>
+                <label title="Let the browser decide the location (default)"><input type="radio" name="npiml" id="npiml-auto" checked> Auto</label>
+                <label title="Use the location of the source window (centered if possible)"><input type="radio" name="npiml" id="npiml-source"> Same as source window</label>
+                <label title="Use custom location"><input type="radio" name="npiml" id="npiml-custom"> <div>
+                    <label title="Custom window location from the left most side of the primary screen">Left: <input type="number" id="npiml-custom-left" min="0" max="9007199254740991" step="1" placeholder="0">px</label>
+                    <label title="Custom window location from the top most side of the primary screen">Top: <input type="number" id="npiml-custom-top" min="0" max="9007199254740991" step="1" placeholder="0">px</label>
+                </div></label>
+            </fieldset>
+        </fieldset>
+    </fieldset>
+    <fieldset><legend><label title="Override for videos (default OFF)"><input type="checkbox" id="npv-override"> For videos</label></legend>
+        <div role="group">
+            <fieldset><legend title="Size of created popup window">Size</legend>
+                <label title="Let the browser decide the size"><input type="radio" name="npvs" id="npvs-auto"> Auto</label>
+                <label title="Use the size of the source window (default)"><input type="radio" name="npvs" id="npvs-source" checked> Same as source window</label>
+                <label title="Use custom size"><input type="radio" name="npvs" id="npvs-custom"> <div>
+                    <label title="Custom window width in pixels (default 100px)">Width: <input type="number" id="npvs-custom-width" min="0" max="9007199254740991" step="1" placeholder="100">px</label>
+                    <label title="Custom window height in pixels (default 75px)">Height: <input type="number" id="npvs-custom-height" min="0" max="9007199254740991" step="1" placeholder="75">px</label>
+                </div></label>
+            </fieldset>
+            <fieldset><legend title="Location of created popup window on screen">Location</legend>
+                <label title="Let the browser decide the location"><input type="radio" name="npvl" id="npvl-auto"> Auto</label>
+                <label title="Use the location of the source window (centered if possible; default)"><input type="radio" name="npvl" id="npvl-source" checked> Same as source window</label>
+                <label title="Use custom location"><input type="radio" name="npvl" id="npvl-custom"> <div>
+                    <label title="Custom window location from the left most side of the primary screen">Left: <input type="number" id="npvl-custom-left" min="0" max="9007199254740991" step="1" placeholder="0">px</label>
+                    <label title="Custom window location from the top most side of the primary screen">Top: <input type="number" id="npvl-custom-top" min="0" max="9007199254740991" step="1" placeholder="0">px</label>
+                </div></label>
+            </fieldset>
+        </div>
+        <label title="Set popup to same maximized/fullscreen state as source window (default OFF)"><input type="checkbox" id="npvm-copy"> Copy maximized/fullscreen state</label>
+        <fieldset><legend><label title="Override for when source window was maximized/in fullscreen (default ON)"><input type="checkbox" id="npvm-override" checked> When maximized/fullscreen</label></legend>
+            <fieldset><legend title="Size of created popup window">Size</legend>
+                <label title="Let the browser decide the size (default)"><input type="radio" name="npvms" id="npvms-auto" checked> Auto</label>
+                <label title="Use the size of the source window"><input type="radio" name="npvms" id="npvms-source"> Same as source window</label>
+                <label title="Use custom size"><input type="radio" name="npvms" id="npvms-custom"> <div>
+                    <label title="Custom window width in pixels (default 100px)">Width: <input type="number" id="npvms-custom-width" min="0" max="9007199254740991" step="1" placeholder="100">px</label>
+                    <label title="Custom window height in pixels (default 75px)">Height: <input type="number" id="npvms-custom-height" min="0" max="9007199254740991" step="1" placeholder="75">px</label>
+                </div></label>
+            </fieldset>
+            <fieldset><legend title="Location of created popup window on screen">Location</legend>
+                <label title="Let the browser decide the location (default)"><input type="radio" name="npvml" id="npvml-auto" checked> Auto</label>
+                <label title="Use the location of the source window (centered if possible)"><input type="radio" name="npvml" id="npvml-source"> Same as source window</label>
+                <label title="Use custom location"><input type="radio" name="npvml" id="npvml-custom"> <div>
+                    <label title="Custom window location from the left most side of the primary screen">Left: <input type="number" id="npvml-custom-left" min="0" max="9007199254740991" step="1" placeholder="0">px</label>
+                    <label title="Custom window location from the top most side of the primary screen">Top: <input type="number" id="npvml-custom-top" min="0" max="9007199254740991" step="1" placeholder="0">px</label>
+                </div></label>
+            </fieldset>
+        </fieldset>
+    </fieldset>
+    <fieldset><legend><label title="Override for audio elements (default OFF)"><input type="checkbox" id="npa-override"> For audio elements</label></legend>
+        <div role="group">
+            <fieldset><legend title="Size of created popup window">Size</legend>
+                <label title="Let the browser decide the size"><input type="radio" name="npas" id="npas-auto"> Auto</label>
+                <label title="Use the size of the source window (default)"><input type="radio" name="npas" id="npas-source" checked> Same as source window</label>
+                <label title="Use custom size"><input type="radio" name="npas" id="npas-custom"> <div>
+                    <label title="Custom window width in pixels (default 100px)">Width: <input type="number" id="npas-custom-width" min="0" max="9007199254740991" step="1" placeholder="100">px</label>
+                    <label title="Custom window height in pixels (default 75px)">Height: <input type="number" id="npas-custom-height" min="0" max="9007199254740991" step="1" placeholder="75">px</label>
+                </div></label>
+            </fieldset>
+            <fieldset><legend title="Location of created popup window on screen">Location</legend>
+                <label title="Let the browser decide the location"><input type="radio" name="npal" id="npal-auto"> Auto</label>
+                <label title="Use the location of the source window (centered if possible; default)"><input type="radio" name="npal" id="npal-source" checked> Same as source window</label>
+                <label title="Use custom location"><input type="radio" name="npal" id="npal-custom"> <div>
+                    <label title="Custom window location from the left most side of the primary screen">Left: <input type="number" id="npal-custom-left" min="0" max="9007199254740991" step="1" placeholder="0">px</label>
+                    <label title="Custom window location from the top most side of the primary screen">Top: <input type="number" id="npal-custom-top" min="0" max="9007199254740991" step="1" placeholder="0">px</label>
+                </div></label>
+            </fieldset>
+        </div>
+        <label title="Set popup to same maximized/fullscreen state as source window (default OFF)"><input type="checkbox" id="npam-copy"> Copy maximized/fullscreen state</label>
+        <fieldset><legend><label title="Override for when source window was maximized/in fullscreen (default ON)"><input type="checkbox" id="npam-override" checked> When maximized/fullscreen</label></legend>
+            <fieldset><legend title="Size of created popup window">Size</legend>
+                <label title="Let the browser decide the size (default)"><input type="radio" name="npams" id="npams-auto" checked> Auto</label>
+                <label title="Use the size of the source window"><input type="radio" name="npams" id="npams-source"> Same as source window</label>
+                <label title="Use custom size"><input type="radio" name="npams" id="npams-custom"> <div>
+                    <label title="Custom window width in pixels (default 100px)">Width: <input type="number" id="npams-custom-width" min="0" max="9007199254740991" step="1" placeholder="100">px</label>
+                    <label title="Custom window height in pixels (default 75px)">Height: <input type="number" id="npams-custom-height" min="0" max="9007199254740991" step="1" placeholder="75">px</label>
+                </div></label>
+            </fieldset>
+            <fieldset><legend title="Location of created popup window on screen">Location</legend>
+                <label title="Let the browser decide the location (default)"><input type="radio" name="npaml" id="npaml-auto" checked> Auto</label>
+                <label title="Use the location of the source window (centered if possible)"><input type="radio" name="npaml" id="npaml-source"> Same as source window</label>
+                <label title="Use custom location"><input type="radio" name="npaml" id="npaml-custom"> <div>
+                    <label title="Custom window location from the left most side of the primary screen">Left: <input type="number" id="npaml-custom-left" min="0" max="9007199254740991" step="1" placeholder="0">px</label>
+                    <label title="Custom window location from the top most side of the primary screen">Top: <input type="number" id="npaml-custom-top" min="0" max="9007199254740991" step="1" placeholder="0">px</label>
+                </div></label>
+            </fieldset>
+        </fieldset>
+    </fieldset>
+    <h2 title="When reinserting a tab from a popup window to the last focused normal window">Popup → Normal</h2>
+    <fieldset><legend title="Location (index) of tab to insert into last focused window">Tab insert location</legend>
+        <label title="Insert as first (left most) tab"><input type="radio" name="pni" id="pni-first"> First tab</label>
+        <label title="Insert as last (right most) tab"><input type="radio" name="pni" id="pni-last"> Last tab</label>
+        <label title="Insert left of active tab (default)"><input type="radio" name="pni" id="pni-left" checked> Left of active tab</label>
+        <label title="Insert right of active tab"><input type="radio" name="pni" id="pni-right"> Right of active tab</label>
+        <label title="Create a new window instead of using the last focused window"><input type="radio" name="pni" id="pni-new"> Always create new window</label>
+    </fieldset>
+    <hr title="When creating a new window">
+    <div role="group">
+        <fieldset><legend title="Size of created window">Size</legend>
+            <label title="Let the browser decide the size"><input type="radio" name="pns" id="pns-auto"> Auto</label>
+            <label title="Use the size of the source popup (default)"><input type="radio" name="pns" id="pns-source" checked> Same as source popup</label>
+            <label title="Use custom size"><input type="radio" name="pns" id="pns-custom"> <div>
+                <label title="Custom window width in pixels (default 100px)">Width: <input type="number" id="pns-custom-width" min="0" max="9007199254740991" step="1" placeholder="100">px</label>
+                <label title="Custom window height in pixels (default 75px)">Height: <input type="number" id="pns-custom-height" min="0" max="9007199254740991" step="1" placeholder="75">px</label>
+            </div></label>
+        </fieldset>
+        <fieldset><legend title="Location of created window on screen">Location</legend>
+            <label title="Let the browser decide the location"><input type="radio" name="pnl" id="pnl-auto"> Auto</label>
+            <label title="Use the location of the source popup (centered if possible; default)"><input type="radio" name="pnl" id="pnl-source" checked> Same as source popup</label>
+            <label title="Use custom location"><input type="radio" name="pnl" id="pnl-custom"> <div>
+                <label title="Custom window location from the left most side of the primary screen">Left: <input type="number" id="pnl-custom-left" min="0" max="9007199254740991" step="1" placeholder="0">px</label>
+                <label title="Custom window location from the top most side of the primary screen">Top: <input type="number" id="pnl-custom-top" min="0" max="9007199254740991" step="1" placeholder="0">px</label>
+            </div></label>
+        </fieldset>
+    </div>
+    <label title="Set window to same maximized/fullscreen state as source popup (default OFF)"><input type="checkbox" id="pnm-copy"> Copy maximized/fullscreen state</label>
+    <fieldset><legend><label title="Override for when source popup was maximized/in fullscreen (default ON)"><input type="checkbox" id="pnm-override" checked> When maximized/fullscreen</label></legend>
+        <fieldset><legend title="Size of created window">Size</legend>
+            <label title="Let the browser decide the size (default)"><input type="radio" name="pnms" id="pnms-auto" checked> Auto</label>
+            <label title="Use the size of the source popup"><input type="radio" name="pnms" id="pnms-source"> Same as source popup</label>
+            <label title="Use custom size"><input type="radio" name="pnms" id="pnms-custom"> <div>
+                <label title="Custom window width in pixels (default 100px)">Width: <input type="number" id="pnms-custom-width" min="0" max="9007199254740991" step="1" placeholder="100">px</label>
+                <label title="Custom window height in pixels (default 75px)">Height: <input type="number" id="pnms-custom-height" min="0" max="9007199254740991" step="1" placeholder="75">px</label>
+            </div></label>
+        </fieldset>
+        <fieldset><legend title="Location of created window on screen">Location</legend>
+            <label title="Let the browser decide the location (default)"><input type="radio" name="pnml" id="pnml-auto" checked> Auto</label>
+            <label title="Use the location of the source popup (centered if possible)"><input type="radio" name="pnml" id="pnml-source"> Same as source popup</label>
+            <label title="Use custom location"><input type="radio" name="pnml" id="pnml-custom"> <div>
+                <label title="Custom window location from the left most side of the primary screen">Left: <input type="number" id="pnml-custom-left" min="0" max="9007199254740991" step="1" placeholder="0">px</label>
+                <label title="Custom window location from the top most side of the primary screen">Top: <input type="number" id="pnml-custom-top" min="0" max="9007199254740991" step="1" placeholder="0">px</label>
+            </div></label>
+        </fieldset>
+    </fieldset>
+    <h2 title="When creating a new window from the last focused normal window/tab">Normal → Normal</h2>
+    <div role="group">
+        <fieldset><legend title="Size of created window">Size</legend>
+            <label title="Let the browser decide the size"><input type="radio" name="nns" id="nns-auto"> Auto</label>
+            <label title="Use the size of the source window (default)"><input type="radio" name="nns" id="nns-source" checked> Same as source window</label>
+            <label title="Use custom size"><input type="radio" name="nns" id="nns-custom"> <div>
+                <label title="Custom window width in pixels (default 100px)">Width: <input type="number" id="nns-custom-width" min="0" max="9007199254740991" step="1" placeholder="100">px</label>
+                <label title="Custom window height in pixels (default 75px)">Height: <input type="number" id="nns-custom-height" min="0" max="9007199254740991" step="1" placeholder="75">px</label>
+            </div></label>
+        </fieldset>
+        <fieldset><legend title="Location of created window on screen">Location</legend>
+            <label title="Let the browser decide the location"><input type="radio" name="nnl" id="nnl-auto"> Auto</label>
+            <label title="Use the location of the source window (centered if possible; default)"><input type="radio" name="nnl" id="nnl-source" checked> Same as source window</label>
+            <label title="Use custom location"><input type="radio" name="nnl" id="nnl-custom"> <div>
+                <label title="Custom window location from the left most side of the primary screen">Left: <input type="number" id="nnl-custom-left" min="0" max="9007199254740991" step="1" placeholder="0">px</label>
+                <label title="Custom window location from the top most side of the primary screen">Top: <input type="number" id="nnl-custom-top" min="0" max="9007199254740991" step="1" placeholder="0">px</label>
+            </div></label>
+        </fieldset>
+    </div>
+    <label title="Set new window to same maximized/fullscreen state as source window (default OFF)"><input type="checkbox" id="nnm-copy"> Copy maximized/fullscreen state</label>
+    <fieldset><legend><label title="Override for when source window was maximized/in fullscreen (default ON)"><input type="checkbox" id="nnm-override" checked> When maximized/fullscreen</label></legend>
+        <fieldset><legend title="Size of created window">Size</legend>
+            <label title="Let the browser decide the size (default)"><input type="radio" name="nnms" id="nnms-auto" checked> Auto</label>
+            <label title="Use the size of the source window"><input type="radio" name="nnms" id="nnms-source"> Same as source window</label>
+            <label title="Use custom size"><input type="radio" name="nnms" id="nnms-custom"> <div>
+                <label title="Custom window width in pixels (default 100px)">Width: <input type="number" id="nnms-custom-width" min="0" max="9007199254740991" step="1" placeholder="100">px</label>
+                <label title="Custom window height in pixels (default 75px)">Height: <input type="number" id="nnms-custom-height" min="0" max="9007199254740991" step="1" placeholder="75">px</label>
+            </div></label>
+        </fieldset>
+        <fieldset><legend title="Location of created window on screen">Location</legend>
+            <label title="Let the browser decide the location (default)"><input type="radio" name="nnml" id="nnml-auto" checked> Auto</label>
+            <label title="Use the location of the source window (centered if possible)"><input type="radio" name="nnml" id="nnml-source"> Same as source window</label>
+            <label title="Use custom location"><input type="radio" name="nnml" id="nnml-custom"> <div>
+                <label title="Custom window location from the left most side of the primary screen">Left: <input type="number" id="nnml-custom-left" min="0" max="9007199254740991" step="1" placeholder="0">px</label>
+                <label title="Custom window location from the top most side of the primary screen">Top: <input type="number" id="nnml-custom-top" min="0" max="9007199254740991" step="1" placeholder="0">px</label>
+            </div></label>
+        </fieldset>
+    </fieldset>
+    <div id="note">Loading...</div>
+    <script src="options.js"></script>
+</body>
+</html>
