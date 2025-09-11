@@ -9,7 +9,7 @@ Chrome extension to turn any tab into a minimal pop-up window (and vice versa)
 > Moves the tab itself so the page is not reloaded and stays the way it is,
 > as oposed to something like `window.open(location.href,"detab","toolbar=0");`
 >
-> Thus, also doesn't need permissions to read URLS, inject scripts, etc
+> Thus, also doesn't need permissions to read URLS, inject scripts, etc.
 
 ## Install
 
@@ -24,8 +24,20 @@ Chrome extension to turn any tab into a minimal pop-up window (and vice versa)
 
 > [!IMPORTANT]
 >
-> This extension is (currently) NOT hosted in _Chrome Web Store_ and since loading extension from other sources does not work (since chrome M33 ~ 2014) for security reasons,
+> This extension is NOT hosted in _Chrome Web Store_ and since loading extension from other sources does not work (since chrome M33 ~ 2014) for security reasons,
 > the only way you could/should install this extension is by following the steps above
+
+## Options
+
+click on the extension in <chrome://extensions> and scroll to `options` (and click it)
+
+> [!NOTE]
+>
+> The position origin for the custom window location is the top-left corner of the primary screen
+>
+> When `Same as source window`/`Same as source popup` is chosen, it tries to center the window relative to the source window/popup
+>
+> If size is set to `auto`, it's recommended to set location to `auto` as well (since centering wouldn't work and it'll align at the top-left corner of the source window/popup)
 
 ## Controls
 
@@ -35,7 +47,7 @@ Chrome extension to turn any tab into a minimal pop-up window (and vice versa)
 >
 > Select multiple tabs by clicking on them while holding <kbd>ctrl</kbd> and/or <kbd>shift</kbd>
 >
-> Move a tab inside a window with <kbd><kbd>ctrl</kbd>+<kbd>shift</kbd>+<kbd>PgUp</kbd></kbd>/<kbd><kbd>ctrl</kbd>+<kbd>shift</kbd>+<kbd>PgDn</kbd></kbd> ([Chrome keyboard shortcuts](https://support.google.com/chrome/answer/157179#zippy=%2Ctab-and-window-shortcuts:~:text=Move%20tabs%20right%20or%20left "Google Chrome Help: Chrome keyboard shortcuts"))
+> Move a tab inside a window with <kbd><kbd>ctrl</kbd>+<kbd>shift</kbd>+<kbd>PgUp</kbd></kbd>/<kbd><kbd>ctrl</kbd>+<kbd>shift</kbd>+<kbd>PgDn</kbd></kbd> (see [Chrome keyboard shortcuts](https://support.google.com/chrome/answer/157179#zippy=%2Ctab-and-window-shortcuts:~:text=Move%20tabs%20right%20or%20left "Google Chrome Help: Chrome keyboard shortcuts"))
 
 <dl>
     <dt><b>Hotkeys</b></dt>
