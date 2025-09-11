@@ -1,0 +1,150 @@
+*{
+    scrollbar-gutter: stable both-edges;
+    scrollbar-width: thin;
+    scrollbar-color: #040 #0000;
+}
+*:focus-within,
+*:hover{scrollbar-color: #0a0 #0000;}
+:root{
+    min-width: min-content;
+    overflow: auto;
+}
+body{
+    background-color: #000;
+    color: #0f0;
+    font-family: serif;
+    color-scheme: dark;
+    display: flex;
+    flex-direction: column;
+    align-items: safe center;
+    justify-content: safe center;
+    gap: .2rem;
+    margin: 0;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+body>:not(:is(h1,h2,hr)),
+body>fieldset>legend>label{align-self: flex-start;}
+h1,h2{
+    white-space: nowrap;
+    margin-block: .5rem;
+}
+hr{
+    border-color: #070;
+    width: 100%;
+}
+hr[title]{
+    translate: 0;
+    overflow: visible;
+    margin-block: 1rem;
+}
+hr[title]::after{
+    content: attr(title);
+    background: #000;
+    padding-inline: .5rem;
+    position: fixed;
+    translate: -50% -50%;
+    top: 50%;
+    left: 50%;
+}
+div[role=group]{
+    display: flex;
+    width: 100%;
+}
+body>div[role=group]{width: calc(100% + 4px);}/* 2*2px margin-inline from fieldset */
+fieldset{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
+    margin-block: 0 2px;
+    margin-inline: 2px;
+}
+fieldset:has(>legend>label>input[id$=m-override]){flex-direction: row;}
+body>fieldset>fieldset:has(>legend>label>input[id$=m-override]){width: calc(100% - 4px);}/* 2*2px margin-inline from fieldset */
+legend{white-space: nowrap;}
+legend:has(>label){padding-inline-start: 0;}
+input{
+    color: inherit;
+    accent-color: #0f0;
+    margin: .2rem .1rem;
+}
+input[type=file]::file-selector-button{color: inherit;}
+input:is([type=radio],[type=checkbox]){vertical-align: middle;}
+input[type=number]{width: 3rem;}
+input[type=button],
+input[type=file]::file-selector-button{
+    background-color: #333;
+    font-family: 'consolas', monospace;
+    border: 2px outset #000;
+    cursor: pointer;
+}
+input[type=file]{cursor: pointer;}
+input[type=button]:hover,
+input[type=file]:hover::file-selector-button{background-color: #444;}
+input[type=button]:active,
+input[type=file]:active::file-selector-button{
+    background-color: #222;
+    border-style: inset;
+}
+input:invalid{border-color: #f00;}
+input:invalid:focus-visible{
+    outline-style: solid;
+    outline-color: #f00;
+}
+input:disabled{
+    color: #0a0;
+    cursor: not-allowed;
+}
+input[type=button]:disabled,
+input[type=file]:disabled::file-selector-button{
+    border-style: solid;
+    border-color: #444;
+    cursor: not-allowed;
+}
+input[type=file]:disabled{cursor: not-allowed;}
+input[type=button]:disabled:hover,
+input[type=file]:disabled:hover::file-selector-button{background-color: #222;}
+input#reset{
+    background-color: #a00;
+    color: #ff0;
+    border-color: #f00;
+}
+input#reset:hover{background-color: #c00;}
+input#reset:active{background-color: #700;}
+label>div{
+    display: inline-block;
+    vertical-align: middle;
+    white-space: wrap;
+}
+label:has(>div),
+label>div>label,
+label:has(>input:is([type=radio],[type=checkbox])){white-space: nowrap;}
+label>div>label{margin-inline-end: .5rem;}
+input[id*=custom]::placeholder,
+label:has(>input:is([type=radio],[type=checkbox]):not(:checked)){color: #0a0;}
+input[id*=custom],
+label:has(>input:is([type=radio],[type=checkbox])[checked]:not(:checked)){color: #b70;}
+label>input:is([type=radio],[type=checkbox]):checked~div>label>input[id*=custom],
+label:has(>input[type=checkbox]:not([checked]):checked){color: #f90;}
+legend:has(>label>input:not(:checked)),
+fieldset:has(>legend>label>input:not(:checked)){display: contents;}
+fieldset:has(>legend>label>input:not(:checked))>:not(legend){display: none;}
+div#note{
+    pointer-events: none;
+    position: fixed;
+    translate: -50% -100%;
+    left: 50%;
+    bottom: -2rem;
+    padding: .2rem .7rem;
+    scale: 0%;
+    font-size: large;
+    white-space: nowrap;
+    border: 1px outset #000;
+    border-radius: 1rem;
+    background-color: #333;
+}
+div#note[data-state=f]{
+    background-color: #a00;
+    color: #ff0;
+}
