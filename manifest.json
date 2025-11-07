@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Chrome detab",
-    "version": "1.3",
+    "version": "1.3.1",
     "description": "Chrome extension to popup any tab or move it back to a normal window",
     "homepage_url": "https://github.com/MAZ01001/chrome_detab",
     "key": "AAAAB3NzaC1yc2EAAAADAQABAAABAQC1gDZIPsF4tB10EIuOMdQihE1POblOPRif2wQwxX81ZXCik8UUjT4FbFeixeq6UBCWxxRNHbPmnPIIznC3lrwfxuzGkzvogh1+dXsWaMrJJlsDq/PfSBoR9Nv3eIsaMB/XF3RRwgPhwG60n7Wm9IShCTjh3DAYpdi2IH0tV9+B/GOeW3c0AIBjhHW0JRAxFRwkp/KnV8yBT+mCrLzaBOmv1srpWGuVvtrFxwkfmuAf5O4V4V6w5cGqp/lX0B+viKivcErLDDcDKhN9XCf31hn5s/0/E0O7xUzeOPNPJCYLv/sk/d25983FenWpOn4ParJvhq4W+m5xDfREXvYwEV8L",
