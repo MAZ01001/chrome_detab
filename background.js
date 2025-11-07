@@ -509,7 +509,7 @@ chrome.action.onClicked.addListener(async tab=>{
 chrome.contextMenus.onClicked.addListener(async(info,tab)=>{
     console.debug(">> context menu item clicked: %o",info.menuItemId);
     if(info.menuItemId==="toggle"){
-        if(tab?.id==null||tab.id===chrome.tabs.TAB_ID_NONE)return console.error("[unexpected] context menu clicked but no tab given");
+        if(tab?.id==null||tab.id===chrome.tabs.TAB_ID_NONE)return console.debug("<< no tab given (do nothing)");
         const win=await chrome.windows.get(tab.windowId).catch(()=>undefined);
         if(win?.id==null||win.id===chrome.windows.WINDOW_ID_NONE)return console.error("[unexpected] window of tab does not exist");
         if(win.type==="popup"){
@@ -580,7 +580,7 @@ chrome.contextMenus.onClicked.addListener(async(info,tab)=>{
         return console.debug("<< normal window → move to popup");
     }
     if(info.menuItemId==="new normal"){
-        if(tab?.id==null||tab.id===chrome.tabs.TAB_ID_NONE)return console.error("[unexpected] context menu clicked but no tab given");
+        if(tab?.id==null||tab.id===chrome.tabs.TAB_ID_NONE)return console.debug("<< no tab given (do nothing)");
         const win=await chrome.windows.get(tab.windowId).catch(()=>undefined);
         if(win?.id==null||win.id===chrome.windows.WINDOW_ID_NONE)return console.error("[unexpected] window of tab does not exist");
         const winNew=await chrome.windows.create({
@@ -636,8 +636,8 @@ chrome.contextMenus.onClicked.addListener(async(info,tab)=>{
 chrome.runtime.onInstalled.addListener(async details=>{
     console.group("installing extension: %s",details.reason);
     console.debug(">> adding context menu items");
-    chrome.contextMenus.create({title:"Popup toggle current tab",contexts:["page"],id:"toggle"});
-    chrome.contextMenus.create({title:"Move to new normal window",contexts:["page"],id:"new normal"});
+    chrome.contextMenus.create({title:"Popup toggle current tab",contexts:["all"],id:"toggle"});
+    chrome.contextMenus.create({title:"Move to new normal window",contexts:["all"],id:"new normal"});
     chrome.contextMenus.create({title:"Popup link",contexts:["link"],id:"link"});
     chrome.contextMenus.create({title:"Popup incognito link",contexts:["link"],id:"link incognito"});
     chrome.contextMenus.create({title:"Popup media (source URL)",contexts:["image","video","audio"],id:"media"});
